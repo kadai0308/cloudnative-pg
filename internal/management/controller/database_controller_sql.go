@@ -43,6 +43,19 @@ type schemaInfo struct {
 	Owner string `json:"owner"`
 }
 
+type fdwInfo struct {
+	extInfo    `json:"extInfo"`
+	Handler    string            `json:"handler,omitempty"`
+	Validator  string            `json:"validator,omitempty"`
+	Options    map[string]string `json:"options,omitempty"`
+	Owner      string            `json:"owner,omitempty"`
+	Privileges []fdwPrivilege    `json:"privileges,omitempty"`
+}
+
+type fdwPrivilege struct {
+	Role string `json:"role"`
+}
+
 func detectDatabase(
 	ctx context.Context,
 	db *sql.DB,
@@ -276,6 +289,8 @@ func createDatabaseExtension(ctx context.Context, db *sql.DB, ext apiv1.Extensio
 	}
 	contextLogger.Info("created extension", "name", ext.Name)
 
+	// run extension create from extensions/extension.go
+
 	return nil
 }
 
@@ -324,6 +339,41 @@ func updateDatabaseExtension(ctx context.Context, db *sql.DB, spec apiv1.Extensi
 		contextLogger.Info("altered extension version", "name", spec.Name, "version", spec.Version)
 	}
 
+	return nil
+}
+
+// support postgres_fdw
+func getDatabaseForeignDataWrapperInfo(ctx context.Context, db *sql.DB, spec apiv1.ForeignDataWrapperSpec) (*fdwInfo, error) {
+	// TODO: implement this function
+	// 1. check if the foreign data wrapper exists
+	// 2. if it does not exist, return nil
+	// 3. if it exists, get and return the info
+	return nil, nil
+}
+
+func createDatabaseForeignDataWrapper(ctx context.Context, db *sql.DB, spec apiv1.ForeignDataWrapperSpec) error {
+	// TODO: implement this function
+	// https://www.postgresql.org/docs/current/sql-alterforeigndatawrapper.html
+	// prerequisite: check if the RequiredExtensions exists, if not create it or return an error (TBD)
+	// 1. run CREATE FOREIGN DATA WRAPPER
+	// 2. error handling
+	// 3. Grant privileges
+	return nil
+}
+
+func dropDatabaseForeignDataWrapper(ctx context.Context, db *sql.DB, spec apiv1.ForeignDataWrapperSpec) error {
+	// TODO: implement this function
+	// https://www.postgresql.org/docs/current/sql-dropforeigndatawrapper.html
+	// 1. run DROP FOREIGN DATA WRAPPER [ IF EXISTS ] name [, ...] [ CASCADE | RESTRICT ]
+	// 2. error handling
+	return nil
+}
+
+func updateDatabaseForeignDataWrapper(ctx context.Context, db *sql.DB, spec apiv1.ForeignDataWrapperSpec, info *fdwInfo) error {
+	// TODO: implement this function
+	// https://www.postgresql.org/docs/current/sql-alterforeigndatawrapper.html
+	// 1. run ALTER FOREIGN DATA WRAPPER name
+	// 2. error handling
 	return nil
 }
 

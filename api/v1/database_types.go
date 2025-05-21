@@ -173,6 +173,8 @@ type DatabaseSpec struct {
 	// The list of extensions to be managed in the database
 	// +optional
 	Extensions []ExtensionSpec `json:"extensions,omitempty"`
+
+	ForeignDataWrapper []ForeignDataWrapperSpec `json:"fdws,omitempty"`
 }
 
 // DatabaseObjectSpec contains the fields which are common to every
@@ -220,6 +222,22 @@ type ExtensionSpec struct {
 	Schema string `json:"schema,omitempty"`
 }
 
+type ForeignDataWrapperSpec struct {
+	// Common fields
+	DatabaseObjectSpec `json:",inline"`
+
+	Handler            string                        `json:"handler,omitempty"`
+	Validator          string                        `json:"validator,omitempty"`
+	Options            map[string]string             `json:"options,omitempty"`
+	Owner              string                        `json:"owner,omitempty"`
+	RequiredExtensions []string                      `json:"requires,omitempty"`
+	Privileges         []ForeignDataWrapperPrivilege `json:"privileges,omitempty"`
+}
+
+type ForeignDataWrapperPrivilege struct {
+	Role string `json:"role"`
+}
+
 // DatabaseStatus defines the observed state of Database
 type DatabaseStatus struct {
 	// A sequence number representing the latest
@@ -242,6 +260,8 @@ type DatabaseStatus struct {
 	// Extensions is the status of the managed extensions
 	// +optional
 	Extensions []DatabaseObjectStatus `json:"extensions,omitempty"`
+
+	ForeignDataWrappers []DatabaseObjectStatus `json:"fdws,omitempty"`
 }
 
 // DatabaseObjectStatus is the status of the managed database objects
