@@ -67,6 +67,13 @@ var extensionObjectManager = databaseObjectManager[apiv1.ExtensionSpec, extInfo]
 	drop:   dropDatabaseExtension,
 }
 
+var fdwObjectManager = databaseObjectManager[apiv1.ForeignDataWrapperSpec, fdwInfo]{
+	get:    getDatabaseForeignDataWrapperInfo,
+	create: createDatabaseForeignDataWrapper,
+	update: updateDatabaseForeignDataWrapper,
+	drop:   dropDatabaseForeignDataWrapper,
+}
+
 // databaseReconciliationInterval is the time between the
 // database reconciliation loop failures
 const databaseReconciliationInterval = 30 * time.Second
@@ -262,6 +269,7 @@ func (r *DatabaseReconciler) reconcileDatabaseObjects(
 
 	obj.Status.Schemas = schemaObjectManager.reconcileList(ctx, db, obj.Spec.Schemas)
 	obj.Status.Extensions = extensionObjectManager.reconcileList(ctx, db, obj.Spec.Extensions)
+	obj.Status.ForeignDataWrappers = fdwObjectManager.reconcileList(ctx, db, obj.Spec.ForeignDataWrapper)
 	return nil
 }
 
